@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  service:
+    build: .
+    container_name: voting-service-app
+    ports:
+      - "8080:8080"
+    networks:
+      - votingnet
+    depends_on:
+      - mysqldb
+      - myrabbitmq
+
+  mysqldb:
+    image: mysql
+    container_name: voting-service-mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - votingnet
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=bootdb
+
+  myrabbitmq:
+    image: rabbitmq:management-alpine
+    container_name: voting-service-rabbitmq
+    hostname: myrabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - votingnet
+    environment:
+      - RABBITMQ_DEFAULT_USER=root
+      - RABBITMQ_DEFAULT_PASS=root
+
+networks:
+  votingnet:
+    driver: bridge
