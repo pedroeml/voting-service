@@ -34,6 +34,9 @@ $ docker network create voting-mysql
 # For creating the MySQL DB
 $ docker container run --name mysqldb -ti -p 3306:3306 -e MYSQL_ROOT_HOST=% -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=bootdb -d mysql
 
+# For creating the RabbitMQ
+$ docker run --name rabbitmq -ti -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_USER=root -e RABBITMQ_DEFAULT_PASS=root --hostname my-rabbitmq -d rabbitmq:management-alpine
+
 # For building the image:
 $ docker image build -t voting-service .
 
