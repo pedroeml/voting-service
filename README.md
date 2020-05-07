@@ -1,3 +1,5 @@
+![Java CI with Gradle](https://github.com/pedroeml/voting-service/workflows/Java%20CI%20with%20Gradle/badge.svg)
+
 # voting-service
 This is a simple Spring Boot server application developed with Spring Boot 2.2.6 and Java OpenJDK 14.0.1.
 
@@ -10,7 +12,7 @@ $ ./gradlew build
 ## Run the app
 
 ```bash
-$ java -jar target/voting-service-0.0.1-SNAPSHOT.jar
+$ java -jar build/libs/voting-service-0.0.1-SNAPSHOT.jar
 ```
 
 ## Serve on Docker with docker-compose
