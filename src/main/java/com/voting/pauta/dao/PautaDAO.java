@@ -44,7 +44,9 @@ public class PautaDAO extends JdbcDaoSupport {
 
         try {
             this.getJdbcTemplate().update(con -> con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS), holder);
-            entity = this.get(holder.getKey().longValue());
+            entity = PautaEntity.builder()
+                .id(holder.getKey().longValue())
+                .build();
         } catch (DataAccessException e) {
             entity = null;
         }

@@ -34,6 +34,13 @@ public class AssociadoService {
         return AssociadoModelMapper.mapFrom(entity);
     }
 
+    public AssociadoModel findByIdWithStatus(long id) {
+        final AssociadoModel model = this.findById(id);
+        this.composeWithVoteStatus(model);
+
+        return model;
+    }
+
     public AssociadoModel find(AssociadoModel model) throws ResponseStatusException {
         AssociadoEntity entity = AssociadoModelMapper.mapToEntity(model);
         entity = this.dao.find(entity);
@@ -48,7 +55,13 @@ public class AssociadoService {
 
     public AssociadoModel findWithStatus(AssociadoModel model) {
         final AssociadoModel associado = this.find(model);
-        final VoteStatusResponse response = this.restService.getVoteStatus(associado.getCpf());
+        this.composeWithVoteStatus(associado);
+
+        return associado;
+    }
+
+    private void composeWithVoteStatus(AssociadoModel model) {
+        final VoteStatusResponse response = this.restService.getVoteStatus(model.getCpf());
         final List<VoteStatusEnum> statusList = Arrays.asList(VoteStatusEnum.values());
 
         final VoteStatusEnum voteStatus = statusList.stream()
@@ -56,9 +69,7 @@ public class AssociadoService {
             .findFirst()
             .orElseGet(() -> VoteStatusEnum.UNABLE);
 
-        associado.setVoteStatus(voteStatus);
-
-        return associado;
+        model.setVoteStatus(voteStatus);
     }
 
     public AssociadoModel add(AssociadoModel model) throws ResponseStatusException {

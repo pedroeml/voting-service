@@ -18,10 +18,19 @@ public class AssociadoController {
     private AssociadoService service;
 
     @GetMapping(value = "/{id}")
-    public AssociadoDTO findById(@Valid @PathVariable long id) {
-        final AssociadoModel model = this.service.findById(id);
+    public AssociadoDTO findById(@Valid @PathVariable long id, @RequestParam(name = "status", defaultValue = "false") String status) {
+        AssociadoModel model;
 
-        return AssociadoModelMapper.mapToDTO(model);
+        final boolean checkVoteStatus = Boolean.parseBoolean(status);
+        model = checkVoteStatus ? this.service.findByIdWithStatus(id) : this.service.findById(id);
+
+        final AssociadoDTO dto = AssociadoModelMapper.mapToDTO(model);
+
+        if (checkVoteStatus) {
+            dto.setAbleToVote(model.getVoteStatus().getCanVote());
+        }
+
+        return dto;
     }
 
     @GetMapping(value = "")

@@ -55,7 +55,7 @@ public class AssociadoDAO extends JdbcDaoSupport {
     public AssociadoEntity save(AssociadoEntity entity) {
         final String query = "INSERT INTO ASSOCIADOS (CPF) VALUES (?)";
         final GeneratedKeyHolder holder = new GeneratedKeyHolder();
-        AssociadoEntity associado;
+        AssociadoEntity associado = entity;
 
         try {
             this.getJdbcTemplate().update(con -> {
@@ -63,7 +63,7 @@ public class AssociadoDAO extends JdbcDaoSupport {
                 statement.setString(1, entity.getCpf());
                 return statement;
             }, holder);
-            associado = this.get(holder.getKey().longValue());
+            associado.setId(holder.getKey().longValue());
         } catch (DataAccessException e) {
             associado = null;
         }
