@@ -31,7 +31,7 @@ public class PautaService {
 
         if (entity == null) {
             final String reason = "A error occured on creating creating new Pauta.";
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason);
         }
 
         return PautaModelMapper.mapFrom(entity);
