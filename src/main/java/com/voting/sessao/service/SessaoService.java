@@ -74,6 +74,10 @@ public class SessaoService {
     }
 
     public SessaoModel add(SessaoRequest request) throws ResponseStatusException {
+        if (request.getIdPauta() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pauta ID can't be null.");
+        }
+
         final PautaModel pauta = this.pautaService.findById(request.getIdPauta());
         final List<SessaoModel> sessoes = this.findSessoesBy(request.getIdPauta());
 
@@ -95,8 +99,7 @@ public class SessaoService {
         entity = this.dao.save(entity);
 
         if (entity == null) {
-            final String reason = "A error occured on creating creating new Sessao.";
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occured on creating creating new Sessao.");
         }
 
         return this.mapFromEntity(entity, pauta);

@@ -85,8 +85,7 @@ public class AssociadoService {
         entity = this.dao.save(entity);
 
         if (entity == null) {
-            final String reason = "A error occured on creating creating new Pauta.";
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occured on creating creating new Pauta.");
         }
 
         return AssociadoModelMapper.mapFrom(entity);
@@ -96,7 +95,8 @@ public class AssociadoService {
         boolean isValid;
 
         try {
-            isValid = model.getCpf().length() == 11
+            isValid = model.getCpf() != null
+                && model.getCpf().length() == 11
                 && Long.parseLong(model.getCpf()) > 0
                 && this.restService.getVoteStatus(model.getCpf()) != null;
         } catch (Exception e) {

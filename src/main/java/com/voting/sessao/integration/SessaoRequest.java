@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SessaoRequest {
-    private long idPauta;
+    private Long idPauta;
     private String fechamento;
 }

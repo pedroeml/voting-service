@@ -30,8 +30,7 @@ public class PautaService {
         final PautaEntity entity = this.dao.save();
 
         if (entity == null) {
-            final String reason = "A error occured on creating creating new Pauta.";
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, reason);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occured on creating creating new Pauta.");
         }
 
         return PautaModelMapper.mapFrom(entity);

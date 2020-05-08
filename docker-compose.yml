@@ -4,6 +4,7 @@ services:
   service:
     build: .
     container_name: voting-service-app
+    restart: on-failure
     ports:
       - "8080:8080"
     networks:
@@ -15,6 +16,7 @@ services:
   mysqldb:
     image: mysql
     container_name: voting-service-mysql
+    restart: always
     ports:
       - "3306:3306"
     volumes:
@@ -24,6 +26,11 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=bootdb
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=root --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 20s
+      retries: 10
 
   myrabbitmq:
     image: rabbitmq:management-alpine

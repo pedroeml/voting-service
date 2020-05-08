@@ -18,15 +18,11 @@ public class AssociadoController {
     private AssociadoService service;
 
     @GetMapping(value = "/{id}")
-    public AssociadoDTO findById(@Valid @PathVariable long id, @RequestParam(name = "status", defaultValue = "false") String status) {
-        AssociadoModel model;
-
-        final boolean checkVoteStatus = Boolean.parseBoolean(status);
-        model = checkVoteStatus ? this.service.findByIdWithStatus(id) : this.service.findById(id);
-
+    public AssociadoDTO findById(@Valid @PathVariable long id, @RequestParam(name = "status", required = false) boolean status) {
+        final AssociadoModel model = status ? this.service.findByIdWithStatus(id) : this.service.findById(id);
         final AssociadoDTO dto = AssociadoModelMapper.mapToDTO(model);
 
-        if (checkVoteStatus) {
+        if (status) {
             dto.setAbleToVote(model.getVoteStatus().getCanVote());
         }
 
@@ -34,17 +30,16 @@ public class AssociadoController {
     }
 
     @GetMapping(value = "")
-    public AssociadoDTO findByCpf(@RequestParam(name = "cpf") String cpf, @RequestParam(name = "status", defaultValue = "false") String status) {
+    public AssociadoDTO findByCpf(@RequestParam(name = "cpf") String cpf, @RequestParam(name = "status", required = false) boolean status) {
         AssociadoModel model = AssociadoModel.builder()
             .cpf(cpf)
             .build();
 
-        final boolean checkVoteStatus = Boolean.parseBoolean(status);
-        model = checkVoteStatus ? this.service.findWithStatus(model) : this.service.find(model);
+        model = status ? this.service.findWithStatus(model) : this.service.find(model);
 
         final AssociadoDTO dto = AssociadoModelMapper.mapToDTO(model);
 
-        if (checkVoteStatus) {
+        if (status) {
             dto.setAbleToVote(model.getVoteStatus().getCanVote());
         }
 
