@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PautaDTO {
+public class ResultadoPautaDTO {
     private long id;
+    private Long idSessao;
+    private boolean isClosed;
+    private long totalVotosPro;
+    private long totalVotosContra;
 }
