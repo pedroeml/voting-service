@@ -21,16 +21,9 @@ public class SessaoModelMapper {
     }
 
     public static SessaoModel mapFrom(SessaoRequest request, PautaModel pauta) throws ParseException {
-        Date fechamento;
-
-        if (request.getFechamento() != null) {
-            fechamento = DateMapper.mapFrom(request.getFechamento());
-        } else {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(new Date());
-            cal.add(Calendar.MINUTE, 1);
-            fechamento = cal.getTime();
-        }
+        final Date fechamento = request.getFechamento() != null ?
+            DateMapper.mapFrom(request.getFechamento()) :
+            DateMapper.mapToFutureDate(new Date(), Calendar.MINUTE, 1);
 
         return SessaoModel.builder()
             .pauta(pauta)

@@ -1,5 +1,6 @@
 package com.voting.sessao.dao;
 
+import com.voting.voto.dao.VotoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -43,6 +44,18 @@ public class SessaoDAO extends JdbcDaoSupport {
     public List<SessaoEntity> getSessoesBy(long idPauta) {
         final String query = "SELECT * FROM SESSOES WHERE ID_PAUTA = ?";
         final Object[] entries = new Object[]{idPauta};
+
+        return this.queryEntities(query, entries);
+    }
+
+    public List<SessaoEntity> getSessoesBy(String fechamentoBegin, String fechamentoEnd) {
+        final String query = "SELECT * FROM SESSOES WHERE FECHAMENTO BETWEEN ? AND ?";
+        final Object[] entries = new Object[]{fechamentoBegin, fechamentoEnd};
+
+        return this.queryEntities(query, entries);
+    }
+
+    private List<SessaoEntity> queryEntities(String query, Object[] entries) {
         List<SessaoEntity> entities;
 
         try {

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,19 @@ public class SessaoService {
 
         return entities.stream()
             .map(entity -> this.mapFromEntity(entity, pauta))
+            .collect(Collectors.toList());
+    }
+
+    public List<SessaoModel> findSessoesBy(Date fechamentoBegin, Date fechamentoEnd) throws ResponseStatusException {
+        final String begin = DateMapper.mapToString(fechamentoBegin);
+        final String end = DateMapper.mapToString(fechamentoEnd);
+        final List<SessaoEntity> entities = this.dao.getSessoesBy(begin, end);
+
+        return entities.stream()
+            .map(entity -> {
+                PautaModel pauta = this.pautaService.findById(entity.getIdPauta());
+                return this.mapFromEntity(entity, pauta);
+            })
             .collect(Collectors.toList());
     }
 
