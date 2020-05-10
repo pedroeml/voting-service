@@ -25,6 +25,8 @@ $ export SPRING_RABBITMQ_PORT=5672
 $ export SPRING_RABBITMQ_USERNAME=root
 $ export SPRING_RABBITMQ_PASSWORD=root
 $ export REST_USER_INFO_URL=https://user-info.herokuapp.com
+$ export EXCHANGE_VOTING_RESULT_NAME=VotingResultsExchange
+$ export QUEUE_VOTING_RESULT_NAME=VotingResultsQueue
 ```
 
 ### Serve MySQL on Docker for local development
