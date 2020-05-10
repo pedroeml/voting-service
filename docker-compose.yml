@@ -9,6 +9,16 @@ services:
       - "8080:8080"
     networks:
       - votingnet
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb/bootdb?createDatabaseIfNotExist=true&autoReconnect=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - SPRING_RABBITMQ_HOST=myrabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=root
+      - SPRING_RABBITMQ_PASSWORD=root
+      - REST_USER_INFO_URL=https://user-info.herokuapp.com
     depends_on:
       - mysqldb
       - myrabbitmq
@@ -19,8 +29,6 @@ services:
     restart: always
     ports:
       - "3306:3306"
-    volumes:
-      - ./mysql:/var/lib/mysql
     networks:
       - votingnet
     environment:
