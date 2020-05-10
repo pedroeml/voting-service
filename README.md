@@ -1,5 +1,7 @@
 ![Java CI with Gradle](https://github.com/pedroeml/voting-service/workflows/Java%20CI%20with%20Gradle/badge.svg)
 
+[![API Doc in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/6554691/SzmfZJ1n?version=latest)
+
 # voting-service
 This is a Spring Boot server application developed with Spring Boot 2.2.6 and Java OpenJDK 14.0.1.
 
