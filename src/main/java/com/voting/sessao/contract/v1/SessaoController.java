@@ -1,5 +1,7 @@
 package com.voting.sessao.contract.v1;
 
+import com.voting.exception.DomainExceptionHandler;
+import com.voting.exception.GenericDomainException;
 import com.voting.sessao.dto.SessaoDTO;
 import com.voting.sessao.integration.SessaoRequest;
 import com.voting.sessao.mapper.SessaoModelMapper;
@@ -21,14 +23,26 @@ public class SessaoController {
 
     @GetMapping(value = "/{id}")
     public SessaoDTO findById(@Valid @PathVariable long id) {
-        final SessaoModel model = this.service.findById(id);
+        SessaoModel model;
+
+        try {
+            model = this.service.findById(id);
+        } catch (GenericDomainException e) {
+            throw DomainExceptionHandler.handle(e);
+        }
 
         return SessaoModelMapper.mapToDTO(model);
     }
 
     @GetMapping(value = "")
     public List<SessaoDTO> findAll(@RequestParam(name = "idPauta") long idPauta) {
-        final List<SessaoModel> sessoes = this.service.findSessoesBy(idPauta);
+        List<SessaoModel> sessoes;
+
+        try {
+            sessoes = this.service.findSessoesBy(idPauta);
+        } catch (GenericDomainException e) {
+            throw DomainExceptionHandler.handle(e);
+        }
 
         return sessoes.stream()
             .map(SessaoModelMapper::mapToDTO)
@@ -37,7 +51,13 @@ public class SessaoController {
 
     @PostMapping(value = "")
     public SessaoDTO add(@RequestBody SessaoRequest request) {
-        final SessaoModel model = this.service.add(request);
+        SessaoModel model;
+
+        try {
+            model = this.service.add(request);
+        } catch (GenericDomainException e) {
+            throw DomainExceptionHandler.handle(e);
+        }
 
         return SessaoModelMapper.mapToDTO(model);
     }

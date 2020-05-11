@@ -70,3 +70,42 @@ Make requests to `http://localhost:8080/` or `http://127.0.0.1:8080/`.
 If some JDBC connection failure logs are displayed, the app container will restart by itself and it'll try to reconnect
 again. It happens because the MySQL container will take a minute or two until it's ready. So no need to worry because
 eventually the app will connect to the MySQL container successfully.
+
+## Architecture
+
+It's feature-first based, which means the most external packages are related to the application features. They
+act like boxes to avoid mixing code accross business or domain-specific topics. These packages may provide a "provider 
+class" (like a Facade) to use inside other packages via dependency injection. Each package may be divided into more specific ones like:
+
+- `contract`: provides REST controller classes. This package may contain version packages inside it.
+- `dao`: provides access methods to persistent data. This package contains the respective type-object class also.
+- `dto`: contains type-object classes for returning as response in the controller classes.
+- `exception`: contains domain-specific runtime exception classes.
+- `integration`: contains type-object classes for receiving as request in the controller classes or as response from
+external services.
+- `mapper`: provides mapper class for mapping type-object classes among packages.
+- `model`: contains type-object classes for most general use accross packages.
+- `service`: provides business or domain-specific classes.
+
+## Improvements
+
+There is plenty of space to use concurreny (multithreading) to perform some independent searching, mapping and filtering, 
+but it'd make the code a little harder to read and to debug which wouldn't be a good trade for such small web service
+application. Something that would also be nice to have is to having more complex SQL queries. That would decrease the 
+application processing and memory usage, but it'd add more complexity to the application and it wouldn't take advantage
+of some code reusability.
+
+## Limitations
+
+Currently only closing sessions on the next minute the Scheduled class is running are monitored to send result messages 
+to the queue. It may be a way to reduce memory usage by querying only the closing sessions on the next minute, but the 
+previous closed sessions won't be captured. To prevent that it'd be required to create a results table to store for
+every session result after its closing time. That could possibly explode memory consumption. The only way to prevent
+that would be paginating the select queries.
+
+### TODO
+
+- Logs (slf4j)
+- Tests (JUnit & Mockito)
+- API Documentation (Swagger)
+    - A draft of it you can check on the published Postman collection

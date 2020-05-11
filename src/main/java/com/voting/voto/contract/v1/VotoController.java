@@ -1,5 +1,7 @@
 package com.voting.voto.contract.v1;
 
+import com.voting.exception.DomainExceptionHandler;
+import com.voting.exception.GenericDomainException;
 import com.voting.voto.dto.VotoDTO;
 import com.voting.voto.integration.VotoRequest;
 import com.voting.voto.mapper.VotoModelMapper;
@@ -21,16 +23,28 @@ public class VotoController {
 
     @GetMapping(value = "/{id}")
     public VotoDTO findById(@Valid @PathVariable long id) {
-        final VotoModel model = this.service.findById(id);
+        VotoModel model;
+
+        try {
+            model = this.service.findById(id);
+        } catch (GenericDomainException e) {
+            throw DomainExceptionHandler.handle(e);
+        }
 
         return VotoModelMapper.mapToDTO(model);
     }
 
     @GetMapping(value = "")
     public List<VotoDTO> findAll(@RequestParam(name = "idSessao") long idSessao, @RequestParam(name = "idAssociado", required = false) Long idAssociado) {
-        final List<VotoModel> sessoes = idAssociado != null ?
-            this.service.findVotosBy(idSessao, idAssociado) :
-            this.service.findVotosBy(idSessao);
+        List<VotoModel> sessoes;
+
+        try {
+            sessoes = idAssociado != null ?
+                this.service.findVotosBy(idSessao, idAssociado) :
+                this.service.findVotosBy(idSessao);
+        } catch (GenericDomainException e) {
+            throw DomainExceptionHandler.handle(e);
+        }
 
         return sessoes.stream()
             .map(VotoModelMapper::mapToDTO)
@@ -39,7 +53,13 @@ public class VotoController {
 
     @PostMapping(value = "")
     public VotoDTO add(@RequestBody VotoRequest request) {
-        final VotoModel model = this.service.add(request);
+        VotoModel model;
+
+        try {
+            model = this.service.add(request);
+        } catch (GenericDomainException e) {
+            throw DomainExceptionHandler.handle(e);
+        }
 
         return VotoModelMapper.mapToDTO(model);
     }

@@ -1,5 +1,6 @@
 package com.voting.associado.service;
 
+import com.voting.associado.exception.AssociadoException;
 import com.voting.associado.integration.VoteStatusResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AssociadoRestService {
@@ -21,7 +21,7 @@ public class AssociadoRestService {
     @Autowired
     private RestTemplate restTemplate;
 
-    protected VoteStatusResponse getVoteStatus(String cpf) {
+    protected VoteStatusResponse getVoteStatus(String cpf) throws AssociadoException {
         final String url = String.format(this.userInfoUrl + "/users/%s", cpf);
         VoteStatusResponse voteStatus;
 
@@ -30,7 +30,7 @@ public class AssociadoRestService {
             voteStatus = response.getBody();
         } catch (RestClientException e) {
             final String reason = String.format("Associado CPF %s is invalid.", cpf);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
+            throw new AssociadoException(reason, HttpStatus.BAD_REQUEST);
         }
 
         return voteStatus;

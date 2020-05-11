@@ -2,17 +2,18 @@ package com.voting.voto.service;
 
 import com.voting.associado.model.AssociadoModel;
 import com.voting.associado.service.AssociadoService;
+import com.voting.exception.GenericDomainException;
 import com.voting.sessao.model.SessaoModel;
 import com.voting.sessao.service.SessaoService;
 import com.voting.voto.dao.VotoDAO;
 import com.voting.voto.dao.VotoEntity;
+import com.voting.voto.exception.VotoException;
 import com.voting.voto.integration.VotoRequest;
 import com.voting.voto.mapper.VotoModelMapper;
 import com.voting.voto.model.VotoModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.List;
@@ -30,12 +31,12 @@ public class VotoService {
     @Autowired
     private AssociadoService associadoService;
 
-    public VotoModel findById(long id) throws ResponseStatusException {
+    public VotoModel findById(long id) throws GenericDomainException {
         final VotoEntity entity = this.dao.get(id);
 
         if (entity == null) {
             final String reason = String.format("Voto ID %d not found.", id);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, reason);
+            throw new VotoException(reason, HttpStatus.NOT_FOUND);
         }
 
         final SessaoModel sessao = this.sessaoService.findById(entity.getIdSessao());
@@ -43,7 +44,7 @@ public class VotoService {
         return VotoModelMapper.mapFrom(entity, sessao, associado);
     }
 
-    public List<VotoModel> findVotosBy(long idSessao) throws ResponseStatusException {
+    public List<VotoModel> findVotosBy(long idSessao) throws GenericDomainException {
         final SessaoModel sessao = this.sessaoService.findById(idSessao);
         final List<VotoEntity> entities = this.dao.getVotosBy(idSessao);
 
@@ -55,7 +56,7 @@ public class VotoService {
             .collect(Collectors.toList());
     }
 
-    public List<VotoModel> findVotosBy(long idSessao, long idAssociado) throws ResponseStatusException {
+    public List<VotoModel> findVotosBy(long idSessao, long idAssociado) throws GenericDomainException {
         final SessaoModel sessao = this.sessaoService.findById(idSessao);
         final AssociadoModel associado = this.associadoService.findById(idAssociado);
         final List<VotoEntity> entities = this.dao.getVotosBy(idSessao, idAssociado);
@@ -65,10 +66,10 @@ public class VotoService {
             .collect(Collectors.toList());
     }
 
-    public VotoModel add(VotoRequest request) throws ResponseStatusException {
+    public VotoModel add(VotoRequest request) throws GenericDomainException {
         String reason = this.checkReasonToThrowException(request);
         if (reason != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, reason);
+            throw new VotoException(reason, HttpStatus.BAD_REQUEST);
         }
 
         final SessaoModel sessao = this.sessaoService.findById(request.getIdSessao());
@@ -77,7 +78,7 @@ public class VotoService {
 
         reason = this.checkReasonToThrowException(votos, sessao, associado);
         if (reason != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, reason);
+            throw new VotoException(reason, HttpStatus.CONFLICT);
         }
 
         VotoModel model = VotoModelMapper.mapFrom(request, sessao, associado);
@@ -85,7 +86,7 @@ public class VotoService {
         entity = this.dao.save(entity);
 
         if (entity == null) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occured on creating creating new Voto.");
+            throw new VotoException("An error occured on creating creating new Voto.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return VotoModelMapper.mapFrom(entity, sessao, associado);

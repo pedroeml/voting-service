@@ -1,6 +1,8 @@
 package com.voting.pauta.contract.v2;
 
+import com.voting.exception.DomainExceptionHandler;
 import com.voting.pauta.dto.ResultadoPautaDTO;
+import com.voting.pauta.exception.PautaException;
 import com.voting.pauta.mapper.ResultadoPautaModelMapper;
 import com.voting.pauta.model.ResultadoPautaModel;
 import com.voting.pauta.service.ResultadoPautaService;
@@ -21,7 +23,13 @@ public class PautaController {
 
     @GetMapping(value = "/{id}")
     public ResultadoPautaDTO findById(@Valid @PathVariable long id) {
-        final ResultadoPautaModel model = this.service.findById(id);
+        ResultadoPautaModel model;
+
+        try {
+            model = this.service.findById(id);
+        } catch (PautaException e) {
+            throw DomainExceptionHandler.handle(e);
+        }
 
         return ResultadoPautaModelMapper.mapToDTO(model);
     }
