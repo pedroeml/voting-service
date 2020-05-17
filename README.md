@@ -65,11 +65,16 @@ $ docker-compose up
 $ docker-compose down
 ```
 
-Make requests to `http://localhost:8080/` or `http://127.0.0.1:8080/`.
+Make requests to [`http://localhost:8080/`](http://localhost:8080/) or [`http://127.0.0.1:8080/`](http://127.0.0.1:8080/).
 
 If some JDBC connection failure logs are displayed, the app container will restart by itself and it'll try to reconnect
 again. It happens because the MySQL container will take a minute or two until it's ready. So no need to worry because
 eventually the app will connect to the MySQL container successfully.
+
+## Open API documentation (Swagger)
+
+Open you browser and navigate to [`http://localhost:8080/swagger-ui.html`](http://localhost:8080/swagger-ui.html) or 
+[`http://127.0.0.1:8080/swagger-ui.html`](http://127.0.0.1:8080/swagger-ui.html).
 
 ## Architecture
 
@@ -106,5 +111,3 @@ that would be paginating the select queries.
 ### TODO
 
 - Tests (JUnit & Mockito)
-- API Documentation (Swagger)
-    - A draft of it you can check on the published Postman collection
