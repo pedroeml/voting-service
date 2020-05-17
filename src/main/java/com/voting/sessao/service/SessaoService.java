@@ -10,6 +10,8 @@ import com.voting.sessao.integration.SessaoRequest;
 import com.voting.sessao.mapper.DateMapper;
 import com.voting.sessao.mapper.SessaoModelMapper;
 import com.voting.sessao.model.SessaoModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class SessaoService {
+    private final Logger logger = LoggerFactory.getLogger(SessaoService.class);
 
     @Autowired
     private SessaoDAO dao;
@@ -68,6 +71,7 @@ public class SessaoService {
         try {
             model = SessaoModelMapper.mapFrom(entity, pauta);
         } catch (ParseException e) {
+            this.logger.error("An exception was thrown on method mapFromEntity.", e);
             final String reason = String.format("Sessao ID %d failed on parsing dates. It must be on format '%s'.", entity.getId());
             throw new SessaoException(reason, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -81,6 +85,7 @@ public class SessaoService {
         try {
             model = SessaoModelMapper.mapFrom(request, pauta);
         } catch (ParseException e) {
+            this.logger.error("An exception was thrown on method mapFromRequest.", e);
             final String reason = String.format("Sessao Request object failed on parsing date. It must be on format '%s'.", DateMapper.datePattern);
             throw new SessaoException(reason, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -116,6 +121,8 @@ public class SessaoService {
         if (entity == null) {
             throw new SessaoException("An error occured on creating creating new Sessao.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        this.logger.info("A new Sessao was added: " + entity);
 
         return this.mapFromEntity(entity, pauta);
     }

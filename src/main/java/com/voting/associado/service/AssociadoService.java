@@ -7,6 +7,8 @@ import com.voting.associado.integration.VoteStatusResponse;
 import com.voting.associado.mapper.AssociadoModelMapper;
 import com.voting.associado.model.AssociadoModel;
 import com.voting.associado.model.VoteStatusEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @Service
 public class AssociadoService {
+    private final Logger logger = LoggerFactory.getLogger(AssociadoService.class);
 
     @Autowired
     private AssociadoDAO dao;
@@ -88,6 +91,8 @@ public class AssociadoService {
             throw new AssociadoException("An error occured on creating creating new Associado.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+        this.logger.info("A new Associado was added: " + entity);
+
         return AssociadoModelMapper.mapFrom(entity);
     }
 
@@ -100,6 +105,7 @@ public class AssociadoService {
                 && Long.parseLong(model.getCpf()) > 0
                 && this.restService.getVoteStatus(model.getCpf()) != null;
         } catch (Exception e) {
+            this.logger.error("An exception was thrown on method isCpfValid.", e);
             isValid = false;
         }
 

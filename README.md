@@ -105,7 +105,6 @@ that would be paginating the select queries.
 
 ### TODO
 
-- Logs (slf4j)
 - Tests (JUnit & Mockito)
 - API Documentation (Swagger)
     - A draft of it you can check on the published Postman collection

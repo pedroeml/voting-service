@@ -1,5 +1,7 @@
 package com.voting.associado.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,6 +17,7 @@ import java.sql.Statement;
 
 @Repository
 public class AssociadoDAO extends JdbcDaoSupport {
+    private final Logger logger = LoggerFactory.getLogger(AssociadoDAO.class);
 
     @Autowired
     private DataSource dataSource;
@@ -65,6 +68,7 @@ public class AssociadoDAO extends JdbcDaoSupport {
             }, holder);
             associado.setId(holder.getKey().longValue());
         } catch (DataAccessException e) {
+            this.logger.error("An exception was thrown on method save.", e);
             associado = null;
         }
 

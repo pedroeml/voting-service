@@ -11,6 +11,8 @@ import com.voting.voto.exception.VotoException;
 import com.voting.voto.integration.VotoRequest;
 import com.voting.voto.mapper.VotoModelMapper;
 import com.voting.voto.model.VotoModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class VotoService {
+    private final Logger logger = LoggerFactory.getLogger(VotoService.class);
 
     @Autowired
     private VotoDAO dao;
@@ -88,6 +91,8 @@ public class VotoService {
         if (entity == null) {
             throw new VotoException("An error occured on creating creating new Voto.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        this.logger.info("A new Voto was added: " + entity);
 
         return VotoModelMapper.mapFrom(entity, sessao, associado);
     }

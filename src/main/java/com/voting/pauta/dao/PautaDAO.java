@@ -1,5 +1,7 @@
 package com.voting.pauta.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -14,6 +16,7 @@ import java.sql.Statement;
 
 @Repository
 public class PautaDAO extends JdbcDaoSupport {
+    private final Logger logger = LoggerFactory.getLogger(PautaDAO.class);
 
     @Autowired
     private DataSource dataSource;
@@ -48,6 +51,7 @@ public class PautaDAO extends JdbcDaoSupport {
                 .id(holder.getKey().longValue())
                 .build();
         } catch (DataAccessException e) {
+            this.logger.error("An exception was thrown on method save.", e);
             entity = null;
         }
 

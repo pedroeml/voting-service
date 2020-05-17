@@ -2,6 +2,8 @@ package com.voting.associado.service;
 
 import com.voting.associado.exception.AssociadoException;
 import com.voting.associado.integration.VoteStatusResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AssociadoRestService {
+    private final Logger logger = LoggerFactory.getLogger(AssociadoRestService.class);
 
     @Value("${rest.user.info.url}")
     private String userInfoUrl;
@@ -29,6 +32,7 @@ public class AssociadoRestService {
             final ResponseEntity<VoteStatusResponse> response = this.restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<VoteStatusResponse>() { });
             voteStatus = response.getBody();
         } catch (RestClientException e) {
+            this.logger.error("An exception was thrown on method getVoteStatus.", e);
             final String reason = String.format("Associado CPF %s is invalid.", cpf);
             throw new AssociadoException(reason, HttpStatus.BAD_REQUEST);
         }
